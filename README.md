@@ -13,7 +13,8 @@ Provide an ability to retrieve the records via a GET request.
 
 Below is the sample payload containing only the fields of interest. 
 
-```{
+```json
+{
 
   "summary" : "",
 
@@ -25,7 +26,8 @@ Below is the sample payload containing only the fields of interest.
 
   "priority" : "Major" 
 
-}```
+}
+```
 
 
 ### Technical limitations.  
