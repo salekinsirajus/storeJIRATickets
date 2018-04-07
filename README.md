@@ -53,4 +53,10 @@ back to Turnberry:
   lists/describes the AWS services you choose to use
 
 ## Design Plan
- 
+At the heart, the problem is of storing and reading data. So we are going to
+figure out how to store the simplest data point using AWS services. After that,
+we will add more features, convenient helpers, etc.
+
+### To Do
+- [ ] Where and how to store the JSON
+- [ ] How to read from the database
