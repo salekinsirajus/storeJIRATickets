@@ -50,4 +50,7 @@ This project should be completable within the AWS free tier.  To submit the code
 back to Turnberry:
 
 - include a READ.me file in the Github repo that at least briefly
-  lists/describes the AWS services you choose to use  
+  lists/describes the AWS services you choose to use
+
+## Design Plan
+ 
