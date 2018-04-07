@@ -3,17 +3,17 @@ Stores and retrieves summary of JIRA tickets; solved as a code assignment
 
 ## Instructions
 The customer wishes to build a system storing summary information about their
-internal JIRA tickets.  In short, the system will
+internal JIRA tickets.  In short, the system will:
 
-Receive POST notifications from JIRA
-Store relevant fields from the notifications
-If applicable, calculate the time between ticket created and ticket closed. 
-Provide an ability to retrieve the records via a GET request.
+- [ ] Receive POST notifications from JIRA
+- [ ] Store relevant fields from the notifications
+- [ ] If applicable, calculate the time between ticket created and ticket closed
+- [ ] Provide an ability to retrieve the records via a GET request.
  
 
 Below is the sample payload containing only the fields of interest. 
 
-```json
+```
 {
 
   "summary" : "",
@@ -31,11 +31,10 @@ Below is the sample payload containing only the fields of interest.
 
 
 ### Technical limitations.  
-
 * Must be implemented in Python and hosted as AWS Lambdas
 * You must use DynamoDB as your datastore.
-### Notes:
 
+### Notes:
 * Put all your region-specific resources in the US-West (Oregon) region
 You do not need a real JIRA instance if you don’t have one readily available;
 you can simulate the POST call however you wish
