@@ -58,6 +58,28 @@ At the heart, the problem is of storing and reading data. So we are going to
 figure out how to store the simplest data point using AWS services. After that,
 we will add more features, convenient helpers, etc.
 
+For this project, we will implement a REST API service for a uniform interface.
+In respect to the serverless framework (and architecture):
+
+- Functions: 
+    * create
+    * read
+    * scan (for browsing)
+    * update (extra feature)
+    * delete (extra feature)
+
+- Event: An AWS API Gateway HTTP endpoint request (a GET/POST request)
+- Resource: An AWS DyanomDB table
+
 ### To Do
 - [ ] Where and how to store the JSON
 - [ ] How to read from the database (figure out a standard way to do this)
+
+### Prereq
+- [x] Node v4 or higher
+- [ ] serverless framework
+
+### Tools 
+- AWS Lambda
+- AWS API Gateway
+- Serverless Framework
