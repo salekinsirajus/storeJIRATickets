@@ -55,8 +55,12 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+    hello:
+        handler: handler.hello
+        events:
+            - http:
+                path: welcome
+                method: get
 
 #  create:
 #    handler: handler.create
@@ -102,11 +106,29 @@ functions:
 
 # you can add CloudFormation resource templates here
 resources:
-  Resources:
-    ticketsDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-        
+    Resources:
+        ticketsDynamoDbTable:
+            Type: "AWS::DynamoDB::Table"
+            DeletionPolicy: Retain
+            Properties:
+                AttributeDefinitions:
+                    -
+                        AttributeName: created_at
+                        AttributeType: S
+                    -
+                        AttributeName: priority
+                        AttributeType: S
+                KeySchema:
+                    -
+                        AttributeName: created_at
+                        KeyType: HASH
+                    -
+                        AttributeName: priority
+                        KeyType: RANGE
+                ProvisionedThroughput:
+                    ReadCapacityUnits: 5
+                    WriteCapacityUnits: 5
+                TableName: ticketsTable
 
 #    NewResource:
 #      Type: AWS::S3::Bucket
