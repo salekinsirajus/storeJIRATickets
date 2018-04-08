@@ -78,18 +78,24 @@ with a GET request, the `read` function will execute and send a response.
 
 Database schema:
 * DynamoDB needs a primary key. It could be a hash, or a string. 
-Two options are available: 
+Three options are available: 
     - use the partition key as primary key
     - use the partition and sort key as composite primary key
+    - create a ticket_id. (we need to scan in that case for reading)
 If the I choose to go with the latter, sort key = priority. 
 
 * Other fields it should have: 
     - summary: string
-    - completed_at: timestamp/string (how to use
+    - created_at: timestamp/string (how to use
       [here](https://stackoverflow.com/questions/40561484/what-data-type-should-be-use-for-timestamp-in-dynamodb)
     - description: string
     - priority: string
     - completion_time: timestamp/string/float
+
+I need to figure out a way to retrieve an item. Possible options:
+1. Use the created_at timestamp (obvious, *can* be tedius)
+2. Use the sort key to get a range of items (is it possible?)
+3. Look at LSI
 
 ### To Do
 - [ ] Add function descriptions in `serverless.yml`
@@ -100,7 +106,8 @@ If the I choose to go with the latter, sort key = priority.
 
 ### Progres
 - [x] Deployed the hello world app
-- [ ] Setting up the DynamoDB table (wip)
+- [x] Setting up the DynamoDB table (wip)
+- [x] Deployed a test GET api method
 
 ### Prereq
 - Node v4 or higher
