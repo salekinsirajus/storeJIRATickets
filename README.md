@@ -61,23 +61,50 @@ we will add more features, convenient helpers, etc.
 For this project, we will implement a REST API service for a uniform interface.
 In respect to the serverless framework (and architecture):
 
+Whenever a user call the using the API endpoint a POST request, the lambda
+`create` function should store (validate either by the gateway or the lambda) the
+data served through that request in DynamoDB. Similarly, when a user invokes
+with a GET request, the `read` function will execute and send a response.
+
 - Functions: 
     * create
     * read
     * scan (for browsing)
-    * update (extra feature)
+    * update (mark finished)
     * delete (extra feature)
 
 - Event: An AWS API Gateway HTTP endpoint request (a GET/POST request)
 - Resource: An AWS DyanomDB table
 
+Database schema:
+* DynamoDB needs a primary key. It could be a hash, or a string. 
+Two options are available: 
+    - use the partition key as primary key
+    - use the partition and sort key as composite primary key
+If the I choose to go with the latter, sort key = priority. 
+
+* Other fields it should have: 
+    - summary: string
+    - completed_at: timestamp/string (how to use
+      [here](https://stackoverflow.com/questions/40561484/what-data-type-should-be-use-for-timestamp-in-dynamodb)
+    - description: string
+    - priority: string
+    - completion_time: timestamp/string/float
+
 ### To Do
-- [ ] Where and how to store the JSON
-- [ ] How to read from the database (figure out a standard way to do this)
+- [ ] Add function descriptions in `serverless.yml`
+- [ ] Implement the functions in `handler.py`
+- [ ] Provide appropriate permissions for the functions
+- [ ] Supply the right configs for the events (AWS API Gateway)
+- [ ] Set up the DynamoDB table(resources)
+
+### Progres
+- [x] Deployed the hello world app
+- [ ] Setting up the DynamoDB table (wip)
 
 ### Prereq
-- [x] Node v4 or higher
-- [ ] serverless framework
+- Node v4 or higher
+- serverless framework
 
 ### Tools 
 - AWS Lambda
