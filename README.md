@@ -108,6 +108,8 @@ I need to figure out a way to retrieve an item. Possible options:
 - [x] Deployed the hello world app
 - [x] Setting up the DynamoDB table (wip)
 - [x] Deployed a test GET api method
+- [x] Implemented a hardcoded create function
+- [x] Implemented a scan function
 
 ### Prereq
 - Node v4 or higher
@@ -117,3 +119,21 @@ I need to figure out a way to retrieve an item. Possible options:
 - AWS Lambda
 - AWS API Gateway
 - Serverless Framework
+
+### Learning from this exercise
+- Serverless architecture can be a great model for reducing operationals cost,
+and depending on the organization, the server management could be completely
+gone.
+- DynamoDB's strength lie in its distributive nature. So it is crucial that even
+distributions across the partitions are ensured by choosing a partition key
+with high cardinality.
+- The serverless framework (not the architecture) reduces a lot of pain points
+that comes with deploying a non-trivial app in a serverless model. For AWS,
+this framework produces a CloudFormation template and deploy resources in a
+systematic way
+- The serverless framework also provides AWS API Gateway, which makes dev's life
+significantly easier. By taking care of things like that, serverless allow the
+developer to focus on the features of their program.
+- AWS Lambda is a great choice for orgs that uses functional programming as
+their primary paradigm of developemnt. AWS Lambda is suppossed to be programmed in a
+stateless manner.

@@ -20,6 +20,16 @@ service: tickets
 provider:
   name: aws
   runtime: python3.6
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:PutItem
+        - dynamodb:Scan
+        - dynamodb:GetItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 # setting the API endpoint to US-West(Oregon)
   stage: dev
@@ -55,13 +65,25 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-    hello:
-        handler: handler.hello
-        events:
-            - http:
-                path: welcome
-                method: get
-
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: welcome
+          method: get
+  read:
+    handler: read.read
+    events:
+      - http:
+          path: read
+          method: get
+          cors: true
+  store:
+    handler: store.store
+    events:
+      - http:
+          path: store
+          method: get
 #  create:
 #    handler: handler.create
 
@@ -106,29 +128,25 @@ functions:
 
 # you can add CloudFormation resource templates here
 resources:
-    Resources:
-        ticketsDynamoDbTable:
-            Type: "AWS::DynamoDB::Table"
-            DeletionPolicy: Retain
-            Properties:
-                AttributeDefinitions:
-                    -
-                        AttributeName: created_at
-                        AttributeType: S
-                    -
-                        AttributeName: priority
-                        AttributeType: S
-                KeySchema:
-                    -
-                        AttributeName: created_at
-                        KeyType: HASH
-                    -
-                        AttributeName: priority
-                        KeyType: RANGE
-                ProvisionedThroughput:
-                    ReadCapacityUnits: 5
-                    WriteCapacityUnits: 5
-                TableName: ticketsTable
+  Resources:
+    ticketsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: created_at
+            AttributeType: S
+          - AttributeName: priority
+            AttributeType: S
+        KeySchema:
+          - AttributeName: created_at
+            KeyType: HASH
+          - AttributeName: priority
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
 
 #    NewResource:
 #      Type: AWS::S3::Bucket
