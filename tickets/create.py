@@ -22,9 +22,14 @@ def create(event, context):
         
         return {'statusCode': 422,
                 'body':json.dumps({"Error Message": "missing `created` attribute"})}
-
-    raw_item = Item(data)
-    valid_item = raw_item.validate()
+    try:
+        raw_item = Item(data)
+        valid_item = raw_item.validate()
+    except Exception as e:
+        print(e)
+        return {'statusCode': 422,
+                'body':json.dumps({"Failed to validate input fields"})
+            }
  
     table.put_item(Item=valid_item)
 

@@ -13,6 +13,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:Scan
         - dynamodb:GetItem
+        - dynamodb:Query
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 # setting the API endpoint to US-West(Oregon)
