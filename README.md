@@ -51,50 +51,6 @@ method), even though they might contain an empty string. DynamoDB cannot accept
 a null value, and an empty field won't be recorded (consistent with DynamoDB
 being a schemaless database).
 
----
-## Design Plan
-At the heart, the problem is of storing and reading data. So we are going to
-figure out how to store the simplest data point using AWS services. After that,
-we will add more features, convenient helpers, etc.
-
-For this project, we will implement a REST API service for a uniform interface.
-In respect to the serverless framework (and architecture):
-
-Whenever a user call the using the API endpoint a POST request, the lambda
-`create` function should store (validate either by the gateway or the lambda) the
-data served through that request in DynamoDB. Similarly, when a user invokes
-with a GET request, the `read` function will execute and send a response.
-
-- Functions: 
-    * create
-    * read
-    * scan (for browsing)
-    * update (mark finished)
-    * delete (extra feature)
-
-- Event: An AWS API Gateway HTTP endpoint request (a GET/POST request)
-- Resource: An AWS DyanomDB table
-
-Database schema:
-* DynamoDB needs a primary key. It could be a hash, or a string. 
-Three options are available: 
-    - use the partition key as primary key
-    - use the partition and sort key as composite primary key
-    - create a ticket_id. (we need to scan in that case for reading)
-If the I choose to go with the latter, sort key = priority. 
-
-* Other fields it should have: 
-    - summary: string
-    - created_at: timestamp/string (how to use
-      [here](https://stackoverflow.com/questions/40561484/what-data-type-should-be-use-for-timestamp-in-dynamodb)
-    - description: string
-    - priority: string
-    - completion_time: timestamp/string/float
-
-I need to figure out a way to retrieve an item. Possible options:
-1. Use the created_at timestamp (obvious, *can* be tedius)
-2. Use the sort key to get a range of items (is it possible?)
-3. Look at LSI
 
 ### Design Decisions and Changes:
 1. I finally decided to derive a partition (not composite) key for DynamoDB
@@ -108,7 +64,50 @@ Reasons for not using the other alternatives:
     off the ticket.
     - Using a uuid generated key: if it's going to be a large number, let it be
     meaningful to some degree.
+2. For the `duration` field, I choose to go with a count of days, because that
+is more realistic, and using days as measure of duration avoids the pesky
+manipulations in python `datetime` library.
 
+---
+### Design Plan (Initial)
+(This is more of a chronological design comments)
+At the heart, the problem is of storing and reading data. We are going to
+figure out how to store the simplest data point using AWS services. After that,
+we will add more features, convenient helpers, etc.
+
+This project will be implemented as a restful API. Whenever a user invokes a POST 
+request, the lambda `create` function should store (validate either by the gateway 
+or the lambda) the data served through that request in DynamoDB. 
+Similarly, when a user invokes with a GET request, the `read` function will execute 
+and send a response.
+
+- Functions: 
+    * create
+    * read
+    * scan 
+    * update (future improvements)
+    * delete (future improvements)
+
+- Event: AWS API Gateway HTTP method (a GET/POST request)
+- Resource: A DyanomDB table
+
+Database schema:
+* DynamoDB needs a primary key. It could be a hash, or a string. 
+Two options are available: 
+    - use a partition key as primary key
+    - use a partition and sort key as composite primary key
+
+* Other fields it should have: 
+    - summary: string
+    - created_at: timestamp/string
+    - description: string
+    - priority: string
+    - completion_time: timestamp/string/float
+
+I need to figure out a way to retrieve an item. Possible options:
+1. Use the created_at timestamp (obvious, *can* be tedius)
+2. Use the sort key to get a range of items (is it possible?)
+3. Look at LSI
 
 ### To Do
 - [x] Add functions in `serverless.yml`
