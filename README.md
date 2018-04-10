@@ -6,9 +6,9 @@ The customer wishes to build a system storing summary information about their
 internal JIRA tickets.  In short, the system will:
 
 - [ ] Receive POST notifications from JIRA
-- [ ] Store relevant fields from the notifications
-- [ ] If applicable, calculate the time between ticket created and ticket closed
-- [ ] Provide an ability to retrieve the records via a GET request.
+- [x] Store relevant fields from the notifications
+- [x] If applicable, calculate the time between ticket created and ticket closed
+- [x] Provide an ability to retrieve the records via a GET request.
  
 
 Below is the sample payload containing only the fields of interest. 
@@ -98,11 +98,16 @@ I need to figure out a way to retrieve an item. Possible options:
 3. Look at LSI
 
 ### To Do
-- [ ] Add function descriptions in `serverless.yml`
-- [ ] Implement the functions in `handler.py`
+- [x] Add function descriptions in `serverless.yml`
 - [ ] Provide appropriate permissions for the functions
 - [ ] Supply the right configs for the events (AWS API Gateway)
-- [ ] Set up the DynamoDB table(resources)
+- [x] Set up the DynamoDB table(resources)
+- [ ] Provide appropriate IAM access for functions. Come up with a convenient
+way to call the create method
+- [x] Validate data before putting into DynamoDB
+- [ ] `create` function: check whether the item is duplicate before replacing
+- [ ] `get` function: solve the KeyError issue
+
 
 ### Progres
 - [x] Deployed the hello world app
@@ -117,7 +122,7 @@ I need to figure out a way to retrieve an item. Possible options:
 
 ### Tools 
 - AWS Lambda
-- AWS API Gateway
+- AWS API Gateway (with Lambda-Proxy integration, default on serverless)
 - Serverless Framework
 
 ### Learning from this exercise
@@ -137,3 +142,7 @@ developer to focus on the features of their program.
 - AWS Lambda is a great choice for orgs that uses functional programming as
 their primary paradigm of developemnt. AWS Lambda is suppossed to be programmed in a
 stateless manner.
+- There is an odd error with CloudFormation that is if you change some
+attributename in DynamoDB, you need to renamce the table name, and the rename
+back, for the case when you just want to replace the name of the column. In
+general, the paradigm will take more time to mature.

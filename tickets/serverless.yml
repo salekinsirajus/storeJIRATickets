@@ -1,20 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: tickets
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
 provider:
@@ -65,25 +49,27 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  list:
+    handler: list.list
     events:
       - http:
-          path: welcome
-          method: get
-  read:
-    handler: read.read
-    events:
-      - http:
-          path: read
+          path: tickets
           method: get
           cors: true
-  store:
-    handler: store.store
+  create:
+    handler: create.create
     events:
       - http:
-          path: store
+          path: tickets
+          method: post
+          cors: true
+  get:
+    handler: get.get
+    events:
+      - http:
+          path: tickets/{id}
           method: get
+          cors: true
 #  create:
 #    handler: handler.create
 
@@ -134,15 +120,11 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: created_at
-            AttributeType: S
-          - AttributeName: priority
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: created_at
+          - AttributeName: id
             KeyType: HASH
-          - AttributeName: priority
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
