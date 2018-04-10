@@ -1,56 +1,39 @@
 # Ticket Interface
-Stores and retrieves summary of JIRA tickets; solved as a code assignment
+A RESTful API backend that stores JIRA tickets. Implemented with the serverless
+framework. 
 
-## Instructions
-The customer wishes to build a system storing summary information about their
-internal JIRA tickets.  In short, the system will:
-
-- [ ] Receive POST notifications from JIRA
-- [x] Store relevant fields from the notifications
-- [x] If applicable, calculate the time between ticket created and ticket closed
-- [x] Provide an ability to retrieve the records via a GET request.
- 
-
-Below is the sample payload containing only the fields of interest. 
-
+## How to use
+The easiest way to communicate with this API is to use `curl`.
+1. List the tickets in the table:
 ```
+https://qoofdupzk8.execute-api.us-west-2.amazonaws.com/dev/tickets
+```
+2. Get a spcific ticket:
+```
+https://qoofdupzk8.execute-api.us-west-2.amazonaws.com/dev/tickets/{id}
+
+example:
+curl -X GET https://qoofdupzk8.execute-api.us-west-2.amazonaws.com/dev/tickets/1544473087987
+
+outputs:
 {
-
-  "summary" : "",
-
-  "created": "2018-01-10T20:15:07.958Z",
-
-  "completed": "", // Date time the ticket was closed.
-
-  "description" : "",
-
-  "priority" : "Major" 
-
+    "completed": "2018-10-10T20:15:07.958Z", 
+    "created": "2018-12-10T20:18:07.987Z",
+    "priority": "major", 
+    "summary": "Does this go to db", 
+    "id": "1544473087987",
+    "duration": 61
 }
 ```
 
+3. Create a ticket 
+```
+curl -X POST https://qoofdupzk8.execute-api.us-west-2.amazonaws.com/dev/tickets
+-H "Content-Type: application/json" -d '{"completed":"2018-10-19T20:15:07.958Z",
+"priority":"major", "summary":"lets call it a feature",
+"created":"2018-11-04T07:18:03.764Z"}' 
 
-### Technical limitations.  
-* Must be implemented in Python and hosted as AWS Lambdas
-* You must use DynamoDB as your datastore.
-
-### Notes:
-* Put all your region-specific resources in the US-West (Oregon) region
-You do not need a real JIRA instance if you don’t have one readily available;
-you can simulate the POST call however you wish
-
-### Hints:
-* Serverless Framework https://serverless.com/ (optional, but major extra credit
-kudos)
-
-* You will need to use more AWS services than mentioned above
- 
-### Submission
-This project should be completable within the AWS free tier.  To submit the code
-back to Turnberry:
-
-- include a READ.me file in the Github repo that at least briefly
-  lists/describes the AWS services you choose to use
+```
 
 ---
 ## Design Plan
@@ -97,6 +80,17 @@ I need to figure out a way to retrieve an item. Possible options:
 2. Use the sort key to get a range of items (is it possible?)
 3. Look at LSI
 
+### Design Decisions and Changes:
+1. I finally decided to derive a partition (not composite) key for DynamoDB
+using the converted epoch values of the `created` attribute of the ticket.
+Reasons for not using the other alternatives:
+    * A datetimp string: it contains unsafe characters for the browser, although it
+    could have been useful for the case of retrieving a single item from the data 
+    off the ticket.
+    * Using a uuid generated key: if it's going to be a large number, let it be
+    meaningful to some degree.
+
+
 ### To Do
 - [x] Add function descriptions in `serverless.yml`
 - [ ] Provide appropriate permissions for the functions
@@ -107,7 +101,7 @@ way to call the create method
 - [x] Validate data before putting into DynamoDB
 - [ ] `create` function: check whether the item is duplicate before replacing
 - [ ] `get` function: solve the KeyError issue
-
+- [ ] Think about adding a search functionality
 
 ### Progres
 - [x] Deployed the hello world app
