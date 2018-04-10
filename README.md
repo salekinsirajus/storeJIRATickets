@@ -1,6 +1,6 @@
 # Ticket Interface
-A RESTful API backend that stores JIRA tickets. Implemented with the 
-[serverless] (https://serverless.com) framework. 
+A RESTful API that lets you store and read JIRA tickets. Implemented using the 
+[serverless](https://serverless.com) framework. 
 
 ## Tools Used
 - AWS Lambda 
@@ -59,11 +59,12 @@ using the converted epoch values of the `created` attribute of the ticket. The
 not going to have uneven traffic on one partition.
 
 Reasons for not using the other alternatives:
-    - A datetimp string: it contains unsafe characters for the browser, although it
-    could have been useful for the case of retrieving a single item from the data 
-    off the ticket.
-    - Using a uuid generated key: if it's going to be a large number, let it be
-    meaningful to some degree.
+* A datetimp string: it contains unsafe characters for the browser, although it
+could have been useful for the case of retrieving a single item from the data 
+off the ticket.
+* Using a uuid generated key: if it's going to be a large number, let it be
+meaningful to some degree.
+
 2. For the `duration` field, I choose to go with a count of days, because that
 is more realistic, and using days as measure of duration avoids the pesky
 manipulations in python `datetime` library.
@@ -88,26 +89,25 @@ and send a response.
     * update (future improvements)
     * delete (future improvements)
 
-- Event: AWS API Gateway HTTP method (a GET/POST request)
-- Resource: A DyanomDB table
+- Event: 
+    * AWS API Gateway HTTP method (GET/POST request)
 
-Database schema:
-* DynamoDB needs a primary key. It could be a hash, or a string. 
+- Resource: 
+    * A DyanomDB table
+
+- Database schema:
+DynamoDB needs a primary key. It could be a hash, or a string. 
 Two options are available: 
-    - use a partition key as primary key
-    - use a partition and sort key as composite primary key
+    * use a partition key as primary key
+    * use a partition and sort key as composite primary key
 
-* Other fields it should have: 
-    - summary: string
-    - created_at: timestamp/string
-    - description: string
-    - priority: string
-    - completion_time: timestamp/string/float
+    * Other fields it should have: 
+        - summary: string
+        - created: timestamp/string
+        - duration: number
+        - priority: string
+        - completion: timestamp/string/float
 
-I need to figure out a way to retrieve an item. Possible options:
-1. Use the created_at timestamp (obvious, *can* be tedius)
-2. Use the sort key to get a range of items (is it possible?)
-3. Look at LSI
 
 ### To Do
 - [x] Add functions in `serverless.yml`
@@ -117,7 +117,7 @@ I need to figure out a way to retrieve an item. Possible options:
 way to call the create method
 - [x] Validate data before putting into DynamoDB
 - [ ] `create` function: check whether the item is duplicate before replacing
-- [ ] `get` function: solve the KeyError issue
+- [x] `get` function: solve the KeyError issue
 - [ ] Write unit tests and integration tests
 
 ### Progres
@@ -143,7 +143,8 @@ systematic way, which I found to be very helpful during the development.
 their primary paradigm of developemnt. AWS encourage Lambda functions 
 to be programmed in a stateless manner.
 - There is an odd error with CloudFormation that is if you change some
-attributename in DynamoDB, you need to renamce the table name, and the rename
-back, for the case when you just want to replace the name of the column. I have
+attributename in DynamoDB, you need to rename the table name (deploy), 
+and the rename it back (deploy). There should be more a systematic way to do
+this  when you just want to replace the name of a column. I have
 a noticed a lot of such workarounds (and used them) during the development. It
-will take some time before some of this significant issues are taken care of.
+will take some time before some of this obvious issues are taken care of.
